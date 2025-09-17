@@ -1,10 +1,8 @@
 <template>
-  <img :src="imageData" />
+  <img :src="imgData" />
 </template>
 
 <script>
-import api from '@/lib/api.js';
-
 export default {
   name: 'DriveImage',
   props: {
@@ -13,14 +11,11 @@ export default {
       default: '',
     },
   },
-  data() {
-    return {
-      imageData: null,
-    };
-  },
-  async mounted() {
-    const result = await api.getText(`${api.IMAGE_DELIVERY}?id=${this.fid}`);
-    this.imageData = result;
+  computed: {
+    imgData: function() {
+      const target = this.$store.getters.getFiles.find((f) => f.file_id === this.fid);
+      return target.data;
+    },
   },
 };
 </script>

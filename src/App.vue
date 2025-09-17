@@ -90,6 +90,18 @@ export default {
     } finally {
       this.isPreLoading = false;
     }
+
+    try {
+      const files = this.$store.getters.getFiles;
+      files.forEach(async (f, i) => {
+        files[i].data = await api.getText(`${api.IMAGE_DELIVERY}?id=${f.file_id}`);
+      });
+      this.$store.commit('setFiles', files);
+    } catch (error) {
+      console.error(error.message || 'Unknown error occurred.');
+    } finally {
+      this.$store.commit('setImageDataInsert', true);
+    }
   },
   beforeUnmount() {
     window.removeEventListener('scroll', this.handleScroll);
@@ -115,6 +127,7 @@ html, body {
   margin: 0;
   height: 100%;
   scroll-behavior: smooth;
+  font-size: 16px;
 }
 #app {
   display: flex;

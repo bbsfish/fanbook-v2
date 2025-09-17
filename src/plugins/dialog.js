@@ -191,7 +191,7 @@ const DialogPlugin = {
         box-sizing: border-box;
       }
       .dialog-buttons {
-        display: flex; justify-content: space-between; gap: 12px;
+        display: flex; justify-content: flex-end; gap: 12px;
       }
       .dialog-button {
         border: none; border-radius: 4px; padding: 8px 16px;

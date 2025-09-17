@@ -1,17 +1,40 @@
 <!DOCTYPE html>
-<html lang="">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title><%= htmlWebpackPlugin.options.title %></title>
-  </head>
-  <body>
-    <noscript>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+
+  <title><%= htmlWebpackPlugin.options.title %></title>
+  <!-- <title>Fanbook v2 | あなたの同人誌コレクションをオンラインで手軽に整理</title> -->
+  <meta name="description" content="お気に入りの同人誌のコレクションを表紙画像付きで管理できるウェブアプリです。サークル名や作家名での検索、タグ付け機能で、あなたのコレクション整理をお手伝いします。">
+  <meta name="keywords" content="ファンブック, 同人誌, 管理, コレクション, 整理, アプリ, webアプリ">
+  <link rel="canonical" href="https://fanbook-v2.vercel.app/">
+  <meta property="og:title" content="<%= htmlWebpackPlugin.options.title %>">
+  <meta property="og:description" content="お気に入りの同人誌を表紙画像付きで管理できるウェブアプリです。あなたのコレクション整理をお手伝いします。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://fanbook-v2.vercel.app/">
+  <meta property="og:image" content="https://fanbook-v2.vercel.app/img/icons/msapplication-icon-144x144.png">
+  <meta property="og:site_name" content="<%= htmlWebpackPlugin.options.title %>">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= htmlWebpackPlugin.options.title %>">
+  <meta name="twitter:description" content="お気に入りの同人誌を表紙画像付きで管理できるウェブアプリです。あなたのコレクション整理をお手伝いします。">
+  <meta name="twitter:image" content="https://fanbook-v2.vercel.app/img/icons/msapplication-icon-144x144.png"> </head>
+<body>
+  <noscript>
+    <p>
+      <strong>このウェブサイトの全ての機能を利用するためには、JavaScriptを有効にする必要があります。お使いのブラウザでJavaScriptを有効にして、再度お試しください。</strong>
+    </p>
+    <p>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
+    </p>
+  </noscript>
+  <div id="app">
+    <h1>ファンブック管理</h1>
+    <p>大切なファンブック（同人誌）コレクションを、もっと見やすく、もっと楽しく管理しましょう。</p>
+  </div>
+  <!-- built files will be auto injected -->
   </body>
 </html>

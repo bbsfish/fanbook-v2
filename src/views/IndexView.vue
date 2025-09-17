@@ -20,7 +20,7 @@
     <div class="gallery">
       <div class="image-wrap" v-for="(f, i) of sortedFiles" :key="i">
         <div class="image-placeholder">
-          <DriveImage :fid="f.file_id" />
+          <DriveImage :fid="f.file_id" :key="f.file_id" />
         </div>
         <p>{{ f.title }}</p>
         <button v-if="isDeleteButtonView" @click="removeFile(i)">削除</button>
@@ -133,16 +133,16 @@ export default {
   gap: 1rem;
   .image-wrap {
     .image-placeholder {
-      width: 20rem;
-      height: 25rem;
+      width: 21rem;
+      height: 28rem;
       background-image: linear-gradient(90deg, #fff 0%, #888 50%, #fff 100%);
       background-position: 0% 0%;
       background-size: 3000px 100%;
       animation: Grad 2.5s linear infinite;
       animation-delay:0.5s;
       img {
-        width: 20rem;
-        height: 25rem;
+        width: 21rem;
+        height: 28rem;
       }
     }
     p {
