@@ -1,28 +1,36 @@
 <template>
   <div class="index-view">
-    <p class="delete-toggle-button">削除ボタンを表示する:<ToggleButton @on="isDeleteButtonView = true" @off="isDeleteButtonView = false" /></p>
+    <p class="toggle-buttons">
+      削除ボタンを表示する:<ToggleButton ref="deleteToggleButton" @on="checkPermission" @off="isDeleteButtonView = false" />
+      著者情報を表示する:<ToggleButton @on="isAuthorInfoView = true" @off="isAuthorInfoView = false" />
+    </p>
     <div class="filters">
       <label>
         <span>サークル</span>
         <select v-model="vmCercleId" @change="sortFilesByCercle">
           <option value="all" selected>全て</option>
-          <option v-for="(c, i) of cercles" :value="c.cercle_id" :key="i">{{ c.name }}</option>
+          <option v-for="(c) of cercles" :value="c.cercle_id" :key="c.cercle_id">{{ c.name }}</option>
         </select>
       </label>
       <label>
         <span>カテゴリ</span>
         <select v-model="vmCategoryId" @change="sortFilesByCategory">
           <option value="all" selected>全て</option>
-          <option v-for="(a, i) of categories" :value="a.category_id" :key="i">{{ a.name }}</option>
+          <option v-for="(a) of categories" :value="a.category_id" :key="a.category_id">{{ a.name }}</option>
         </select>
       </label>
     </div>
     <div class="gallery">
-      <div class="image-wrap" v-for="(f, i) of sortedFiles" :key="i">
+      <div class="image-wrap" v-for="(f, i) of sortedFiles" :key="f.file_id">
         <div class="image-placeholder">
           <DriveImage :fid="f.file_id" :key="f.file_id" />
         </div>
-        <p>{{ f.title }}</p>
+        <p>
+          <span>{{ f.title }}</span>
+          <span v-if="isAuthorInfoView">
+            / {{ getCercleInfo(f.cercle_id, 'name') }}({{ getCercleInfo(f.cercle_id, 'author') }})
+          </span>
+        </p>
         <button v-if="isDeleteButtonView" @click="removeFile(i)">削除</button>
       </div>
     </div>
@@ -52,6 +60,7 @@ export default {
       isSortedFilesUpdated: false,
       isFilesUpdated: false,
       isDeleteButtonView: false,
+      isAuthorInfoView: false,
     };
   },
   computed: {
@@ -102,6 +111,19 @@ export default {
       else this.sortedFilesByCategory = this.files.filter((f) => f.category_id === this.vmCategoryId);
       this.isSortedFilesUpdated = true;
     },
+    async checkPermission() {
+      if (this.$store.getters.checkPermission) this.isDeleteButtonView = true;
+      else {
+        this.$nextTick(() => {
+          this.$refs.deleteToggleButton.setOff();
+        });
+        await this.$dialog.alert('権限がありません。有効化するためにログインしてください。');
+      }
+    },
+    getCercleInfo(cercleId, targetKey) {
+      const cercleInfo = this.$store.getters.getCercles.find((c) => c.cercle_id === cercleId);
+      return cercleInfo[targetKey];
+    },
   },
   watch: {
     isSortedFilesUpdated(to) {
@@ -124,7 +146,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.delete-toggle-button {
+.toggle-buttons {
   display: flex;
 }
 .gallery {

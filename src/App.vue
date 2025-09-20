@@ -99,8 +99,6 @@ export default {
       this.$store.commit('setFiles', files);
     } catch (error) {
       console.error(error.message || 'Unknown error occurred.');
-    } finally {
-      this.$store.commit('setImageDataInsert', true);
     }
   },
   beforeUnmount() {

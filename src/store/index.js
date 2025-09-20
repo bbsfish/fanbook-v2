@@ -10,15 +10,12 @@ export default createStore({
     categories: [],
     /** @type { Boolean } 管理者（コンテンツ削除などが可能）かどうか */
     hasPermission: false,
-    /** @type { Boolean } files に data（画像データ）が挿入されたかどうか */
-    isImageDataInserted: false,
   }),
   getters: {
     getFiles: (state) => state.files,
     getCercles: (state) => state.cercles,
     getCategories: (state) => state.categories,
     checkPermission: (state) => state.hasPermission,
-    checkImageDataInsert: (state) => state.isImageDataInserted,
   },
   mutations: {
     setFiles(state, data) {
@@ -37,9 +34,6 @@ export default createStore({
     },
     setPermission(state, flag) {
       state.hasPermission = flag;
-    },
-    setImageDataInsert(state, flag) {
-      state.isImageDataInserted = flag;
     },
   },
   actions: {

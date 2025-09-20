@@ -1,117 +1,102 @@
 <template>
-  <div class="toggle-container">
-    <input type="checkbox" id="toggle-switch" v-model="vmCheckBox" />
-    <label for="toggle-switch" class="toggle-label"></label>
+  <div class="toggle-button">
+    <input type="checkbox" :id="inputBoxId" v-model="vmCheckBox" />
+    <label :for="inputBoxId"></label>
   </div>
 </template>
 
 <script>
+import { useId } from 'vue';
+
 export default {
 	name: 'ToggleButton',
+  emits: ['on', 'off'],
 	data() {
 		return {
 			vmCheckBox: false,
 		};
 	},
-	watch: {
+  computed: {
+    inputBoxId: function() {
+      return useId();
+    },
+  },
+  watch: {
 		async vmCheckBox(to) {
-      // 権限を持っていて ON にした時
-			if (to && this.$store.getters.checkPermission) this.$emit('on');
-      // 権限を持っていないのに ON にした時
-      else if (to) {
-        this.$nextTick(() => {
-          this.vmCheckBox = false;
-        });
-        await this.$dialog.alert('権限がありません。有効化するためにログインしてください。');
-      }
-      // それ以外の時
+      if (to) this.$emit('on');
 			else this.$emit('off');
 		},
 	},
+  /** 親コンポーネントからの呼び出し用 */
+  methods: {
+    setOn() {
+      this.vmCheckBox = true;
+    },
+    setOff() {
+      this.vmCheckBox = false;
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-// 変数
-$toggle-width: 60px;
-$toggle-height: 30px;
-$toggle-padding: 3px; // 内側の余白
-$toggle-radius: 15px; // height / 2
+/* 色やサイズを後から変更しやすいように変数で定義します */
+$off-color: #ccc;           // OFFの時の背景色
+$on-color: #4CAF50;          // ONの時の背景色 (緑)
+$thumb-color: white;         // 丸（つまみ）の色
+$thumb-size: 26px;           // つまみの直径
+$track-height: 34px;         // トラック（背景）の高さ
+$track-width: 60px;          // トラックの幅
 
-$handle-size: $toggle-height - ($toggle-padding * 2); // 24px (30 - 3*2)
-$handle-radius: 50%; // 円形
+.toggle-button {
 
-$color-on: #42b983; // ONの状態の色
-$color-off: #ccc; // OFFの状態の色
-$color-handle: #fff; // ハンドルの色
+  /* トラック（背景）部分のスタイル */
+  label {
+    display: inline-block;
+    cursor: pointer;
+    position: relative; /* 丸の位置の基準にする */
+    
+    width: $track-width;
+    height: $track-height;
+    background-color: $off-color;
+    border-radius: $track-height; /* 高さと同値で角を完全に丸くする */
+    transition: background-color 0.3s ease; /* 背景色の変化を滑らかに */
+  }
 
-body {
-  font-family: Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  margin: 0;
-  background-color: #f0f0f0;
-}
+  /* HTMLのチェックボックス自体は非表示にする */
+  input[type="checkbox"] {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
 
-h1 {
-  margin-bottom: 30px;
-  color: #333;
-}
+  /* 丸（つまみ）部分のスタイル */
+  label::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    
+    width: $thumb-size;
+    height: $thumb-size;
+    background-color: $thumb-color;
+    border-radius: 50%; /* 正円にする */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 立体感を出すための影 */
+    transition: transform 0.3s ease; /* 位置移動のアニメーションを滑らかに */
+  }
 
-p {
-  margin-top: 30px;
-  font-size: 1.1em;
-  color: #555;
-}
 
-.toggle-container {
-  /* トグルボタン全体を囲むコンテナ */
-  display: inline-block; /* 必要であれば */
-}
+  /* --- ★ここからがONの時のスタイル --- */
 
-/* 実際のチェックボックスを隠す */
-#toggle-switch {
-  display: none;
-}
-
-/* トグルの見た目をカスタマイズするラベル */
-.toggle-label {
-  display: block;
-  width: $toggle-width;
-  height: $toggle-height;
-  background-color: $color-off;
-  border-radius: $toggle-radius;
-  position: relative;
-  cursor: pointer;
-  transition: background-color 0.3s ease; /* 背景色の変化を滑らかに */
-}
-
-/* トグルの「つまみ」（ハンドル）部分 */
-.toggle-label::before {
-  content: "";
-  position: absolute;
-  top: $toggle-padding;
-  left: $toggle-padding;
-  width: $handle-size;
-  height: $handle-size;
-  background-color: $color-handle;
-  border-radius: $handle-radius;
-  transition: transform 0.3s ease; /* ハンドルの動きを滑らかに */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* チェックされた（ONの）状態 */
-#toggle-switch:checked + .toggle-label {
-  background-color: $color-on; /* ON時の背景色 */
-}
-
-/* チェックされた（ONの）状態でのハンドルの位置 */
-#toggle-switch:checked + .toggle-label::before {
-  transform: translateX(
-    $toggle-width - $handle-size - ($toggle-padding * 2)
-  ); /* 右端に移動 */
+  /* inputが:checked状態になったら、隣接する(+)labelのスタイルを変更 */
+  input:checked + label {
+    background-color: $on-color; /* 背景色を緑に変更 */
+  }
+  
+  /* inputが:checked状態になったら、隣接する(+)labelの::before疑似要素のスタイルを変更 */
+  input:checked + label::before {
+    /* translateXを使って丸を水平方向に移動させる */
+    transform: translateX($track-width - $thumb-size - 8px); /* (トラック幅 - つまみ幅 - 양쪽 여백) */
+  }
 }
 </style>

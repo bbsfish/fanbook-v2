@@ -1,10 +1,10 @@
 <template>
   <div class="cercles-view">
-    <p class="edit-toggle-button">編集ボタンを表示する:<ToggleButton @on="isEditButtonView = true" @off="isEditButtonView = false" /></p>
+    <p class="edit-toggle-button">編集ボタンを表示する:<ToggleButton ref="editToggleButton" @on="checkPermission" @off="isEditButtonView = false" /></p>
     <table>
       <tbody>
         <tr>
-          <th>サークル名</th><th>著者名</th><th>Twitter</th><th>Melonbooks</th><th v-if="isEditButtonView">編集</th>
+          <th>サークル名</th><th>著者名</th><th>Twitter</th><th>Melonbooks</th><th><span v-if="isEditButtonView">編集</span></th>
         </tr>
         <tr v-for="(c, i) of cercles" :key="i">
           <td>
@@ -118,6 +118,15 @@ export default {
 		onMbChanged(e) {
 			this.currentValues.mbLink = e.target.value;
 		},
+    async checkPermission() {
+      if (this.$store.getters.checkPermission) this.isEditButtonView = true;
+      else {
+        this.$nextTick(() => {
+          this.$refs.editToggleButton.setOff();
+        });
+        await this.$dialog.alert('権限がありません。有効化するためにログインしてください。');
+      }
+    },
 	},
 	watch: {
 		inEditorMode(to) {
